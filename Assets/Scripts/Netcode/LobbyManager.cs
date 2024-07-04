@@ -57,6 +57,13 @@ public class LobbyManager : MonoBehaviour
     [SerializeField] private GameObject playerCLon;
     [SerializeField] private GameObject BKround;
 
+    [Space(10)]
+    [Header("Loading game")]
+    [SerializeField] private GameObject LoadingParent;
+    [SerializeField] private Slider loadingBar;
+    [SerializeField] private TMP_Text textloading;
+    [SerializeField] private GameObject CharactersHolder;
+
 
     private string playerName;
     private Player playerData;
@@ -186,16 +193,26 @@ public class LobbyManager : MonoBehaviour
 
     public async void LobbyStart()
     {
+        textloading.text = "Loading...";
+        CharactersHolder.SetActive(false);
         Lobby lobby = await Lobbies.Instance.GetLobbyAsync(joinedLobbyId);
         string JoinCode = await relayManager.StartHostWithRelay(lobby.MaxPlayers);
+        // Show loading 
+        LoadingParent.SetActive(true);
+        loadingBar.value = 0.1f; 
+        //
         isJoined = true;
         await Lobbies.Instance.UpdateLobbyAsync(joinedLobbyId, new UpdateLobbyOptions
-        { Data = new Dictionary<string, DataObject> { { "JoinCode", new DataObject(DataObject.VisibilityOptions.Public, JoinCode) } } });
-
+        {
+            Data = new Dictionary<string, DataObject> { { "JoinCode", new DataObject(DataObject.VisibilityOptions.Public, JoinCode) } }
+        });
+        loadingBar.value = 0.3f; 
         lobbyListParent.SetActive(false);
         joinedLobbyParent.SetActive(false);
+        loadingBar.value = 0.7f;
         BKround.SetActive(false);
         playerCLon.SetActive(false);
+        loadingBar.value = 0.9f; 
         StartCoroutine(DelayGame());
     }
 
@@ -211,14 +228,19 @@ public class LobbyManager : MonoBehaviour
             }
 
             Lobby lobby = await Lobbies.Instance.GetLobbyAsync(joinedLobbyId);
-
             if (!isJoined && lobby.Data["JoinCode"].Value != string.Empty)
             {
+                textloading.text = "Loading...";
                 await relayManager.StartClientWithRelay(lobby.Data["JoinCode"].Value);
                 isJoined = true;
+                LoadingParent.SetActive(true);
+                loadingBar.value = 0.3f;
+                CharactersHolder.SetActive(false);
                 joinedLobbyParent.SetActive(false);
+                loadingBar.value = 0.7f;
                 BKround.SetActive(false);
                 playerCLon.SetActive(false);
+                loadingBar.value = 0.9f;
                 StartCoroutine(DelayGame());
                 return;
             }
@@ -343,8 +365,11 @@ public class LobbyManager : MonoBehaviour
     private IEnumerator DelayGame()
     {
         yield return new WaitForSeconds(5); // Đợi 15 giây
+        loadingBar.value = 1.0f;
+        LoadingParent.SetActive(false);
         Debug.Log("Đã qua 15s");
+     
         characterSelectDisplay.Pick();
-
+       
     }
 }
