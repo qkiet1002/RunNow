@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -11,6 +11,7 @@ using UnityEngine.UI;
 
 public class LobbyManager : MonoBehaviour
 {
+    private CharacterSelectDisplay characterSelectDisplay;
     public static LobbyManager Instance { get; private set; }
 
     [SerializeField] private RelayManager relayManager;
@@ -63,6 +64,7 @@ public class LobbyManager : MonoBehaviour
 
     private async void Start()
     {
+        characterSelectDisplay = FindObjectOfType<CharacterSelectDisplay>();
         Instance = this;
 
         createLobbyPrivateToggle.onValueChanged.AddListener(OnCreateLobbyPrivateToggle);
@@ -192,6 +194,9 @@ public class LobbyManager : MonoBehaviour
 
         lobbyListParent.SetActive(false);
         joinedLobbyParent.SetActive(false);
+        BKround.SetActive(false);
+        playerCLon.SetActive(false);
+        StartCoroutine(DelayGame());
     }
 
 
@@ -212,6 +217,9 @@ public class LobbyManager : MonoBehaviour
                 await relayManager.StartClientWithRelay(lobby.Data["JoinCode"].Value);
                 isJoined = true;
                 joinedLobbyParent.SetActive(false);
+                BKround.SetActive(false);
+                playerCLon.SetActive(false);
+                StartCoroutine(DelayGame());
                 return;
             }
 
@@ -316,20 +324,27 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
-/*    public async void SwitchPlayerTeamButton()
-    {
-        string newTeam;
-        if (playerData.Data["Team"].Value == "A")
+    /*    public async void SwitchPlayerTeamButton()
         {
-            newTeam = "B";
-        }
-        else
-        {
-            newTeam = "A";
-        }
+            string newTeam;
+            if (playerData.Data["Team"].Value == "A")
+            {
+                newTeam = "B";
+            }
+            else
+            {
+                newTeam = "A";
+            }
 
-        await Lobbies.Instance.UpdatePlayerAsync(joinedLobbyId, AuthenticationService.Instance.PlayerId, new UpdatePlayerOptions
-        { Data = new Dictionary<string, PlayerDataObject> { { "Team", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, newTeam) } } });
-        playerData.Data["Team"].Value = newTeam;
-    }*/
+            await Lobbies.Instance.UpdatePlayerAsync(joinedLobbyId, AuthenticationService.Instance.PlayerId, new UpdatePlayerOptions
+            { Data = new Dictionary<string, PlayerDataObject> { { "Team", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, newTeam) } } });
+            playerData.Data["Team"].Value = newTeam;
+        }*/
+    private IEnumerator DelayGame()
+    {
+        yield return new WaitForSeconds(5); // Đợi 15 giây
+        Debug.Log("Đã qua 15s");
+        characterSelectDisplay.Pick();
+
+    }
 }

@@ -1,9 +1,20 @@
 ﻿using UnityEngine;
+using Unity.Netcode;
 
 namespace Invector.vCharacterController
 {
-    public class vThirdPersonInput : MonoBehaviour
+    public class vThirdPersonInput : NetworkBehaviour
     {
+        public override void OnNetworkSpawn()
+        {
+            if (!IsOwner)
+            {
+                enabled = false;
+                return;
+            }
+
+
+        }
         #region Variables       
 
         [Header("Controller Input")]

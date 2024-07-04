@@ -159,6 +159,37 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -20, y: -20}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &9929143
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9929144}
+  m_Layer: 0
+  m_Name: spawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9929144
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9929143}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &16802787
 GameObject:
   m_ObjectHideFlags: 0
@@ -1757,7 +1788,7 @@ MonoBehaviour:
   NetworkConfig:
     ProtocolVersion: 0
     NetworkTransport: {fileID: 110915942}
-    PlayerPrefab: {fileID: 8017319169791800093, guid: 194e527c67187a34897f89aacd712bcf, type: 3}
+    PlayerPrefab: {fileID: 6691038047000925257, guid: 084150ed9f10c6e40beb42d2fc8557b8, type: 3}
     Prefabs:
       NetworkPrefabsLists:
       - {fileID: 11400000, guid: 353496c431e16b64bafbefef8e496a63, type: 2}
@@ -6470,6 +6501,7 @@ MonoBehaviour:
   selectButtonPrefab: {fileID: 2969847280449346481, guid: 47e0d7caf0c284a489b975a73efac269, type: 3}
   characterNameText: {fileID: 1163570772}
   introSpawnPoint: {fileID: 127433429}
+  spawnPoint: {fileID: 9929144}
 --- !u!1 &827325066
 GameObject:
   m_ObjectHideFlags: 0
