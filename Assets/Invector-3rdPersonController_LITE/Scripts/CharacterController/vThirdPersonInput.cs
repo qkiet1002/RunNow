@@ -52,7 +52,7 @@ namespace Invector.vCharacterController
             InputHandle();                  // update the input methods
             cc.UpdateAnimator();            // updates the Animator Parameters
         }
-
+        
         public virtual void OnAnimatorMove()
         {
             cc.ControlAnimatorRootMotion(); // handle root motion animations 
