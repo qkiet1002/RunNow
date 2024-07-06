@@ -7,29 +7,19 @@ public class Tager_Door : NetworkBehaviour
 {
     public GameObject pickupButton; // Tham chiếu đến nút nhặt
     private Animator animator;
-    private bool isOpen; // trạng thái của cửa
+    private NetworkVariable<bool> isOpen = new NetworkVariable<bool>(false); // trạng thái của cửa
     private bool isPlayerInRange = false; // vùng hiển thị button
 
     void Start()
     {
         animator = GetComponent<Animator>();
-        if (animator == null)
-        {
-            Debug.LogError("Animator component missing from this GameObject");
-        }
-        else
-        {
-            animator.SetBool("SateD", true);
-        }
-        isOpen = false;
+        animator.SetBool("SateD", true);
         if (pickupButton != null)
         {
             pickupButton.SetActive(false);
         }
-        else
-        {
-            Debug.LogError("PickupButton reference is missing");
-        }
+
+        isOpen.OnValueChanged += OnDoorStateChanged;
     }
 
     void Update()
@@ -39,7 +29,7 @@ public class Tager_Door : NetworkBehaviour
             if (IsClient)
             {
                 Debug.Log("Nhận được nút E");
-                ToggleDoor();
+                ToggleDoorServerRpc();
             }
         }
     }
@@ -48,8 +38,8 @@ public class Tager_Door : NetworkBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            pickupButton.SetActive(true);
-            isPlayerInRange = true;
+            ulong clientId = other.GetComponent<NetworkObject>().OwnerClientId;
+            SetPickupButtonVisibilityServerRpc(clientId, true);
         }
     }
 
@@ -57,21 +47,19 @@ public class Tager_Door : NetworkBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            pickupButton.SetActive(false);
-            isPlayerInRange = false;
+            ulong clientId = other.GetComponent<NetworkObject>().OwnerClientId;
+            SetPickupButtonVisibilityServerRpc(clientId, false);
         }
     }
 
-    // Hàm này sẽ được gọi bởi script của người chơi
-    public void ToggleDoor()
+    private void OnDoorStateChanged(bool oldState, bool newState)
     {
-        ToggleDoorServerRpc();
+        UpdateDoorState(newState);
     }
 
-    // Hàm này sẽ được gọi để cập nhật trạng thái của cửa từ ServerRpc
-    private void UpdateDoorState()
+    private void UpdateDoorState(bool open)
     {
-        if (isOpen)
+        if (open)
         {
             // Nếu cửa đang mở, đóng cửa
             animator.SetBool("closeD", true);
@@ -86,7 +74,6 @@ public class Tager_Door : NetworkBehaviour
             animator.SetBool("closeD", false);
             Debug.Log("Opening door");
         }
-        isOpen = !isOpen; // Chuyển trạng thái của cửa
     }
 
     public void OnCloseDAnimationEnd()
@@ -97,24 +84,25 @@ public class Tager_Door : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void ToggleDoorServerRpc(ServerRpcParams rpcParams = default)
     {
-        ulong clientId = rpcParams.Receive.SenderClientId;
-        if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var client))
-        {
-            var playerNetworkObject = client.PlayerObject;
-            if (playerNetworkObject != null)
-            {
-                UpdateDoorState(); // Cập nhật trạng thái cửa trên máy chủ
+        isOpen.Value = !isOpen.Value;
+    }
 
-                // Gửi cập nhật trạng thái cửa đến tất cả các client
-                UpdateDoorStateClientRpc(isOpen);
+    [ServerRpc(RequireOwnership = false)]
+    private void SetPickupButtonVisibilityServerRpc(ulong clientId, bool visible, ServerRpcParams rpcParams = default)
+    {
+        SetPickupButtonVisibilityClientRpc(visible, new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = new List<ulong> { clientId }
             }
-        }
+        });
     }
 
     [ClientRpc]
-    void UpdateDoorStateClientRpc(bool newState, ClientRpcParams rpcParams = default)
+    private void SetPickupButtonVisibilityClientRpc(bool visible, ClientRpcParams rpcParams = default)
     {
-        isOpen = newState;
-        UpdateDoorState(); // Cập nhật trạng thái cửa trên tất cả các client
+        pickupButton.SetActive(visible);
+        isPlayerInRange = visible;
     }
 }

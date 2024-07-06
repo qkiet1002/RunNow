@@ -18,7 +18,7 @@ public class Keycode_Set : NetworkBehaviour
         // Kiểm tra nếu người chơi nhấn phím E
         if (Input.GetKeyDown(KeyCode.E) && currentDoor != null)
         {
-            currentDoor.ToggleDoor(); // Gọi hàm ToggleDoor từ script của cửa
+          //  currentDoor.ToggleDoor(); // Gọi hàm ToggleDoor từ script của cửa
         }
     }
     void OnTriggerEnter(Collider other)
