@@ -18,15 +18,6 @@ namespace Invector.vCharacterController
                 MoveCharacter(moveDirection);
         }
 
-       /* void Awake()
-        {
-            animator = GetComponent<Animator>();
-            if (animator == null)
-            {
-                Debug.LogError("Animator component is missing.");
-            }
-        }*/
-
         public virtual void ControlLocomotionType()
         {
             if (lockMovement) return;

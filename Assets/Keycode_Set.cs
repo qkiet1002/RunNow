@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
-public class Keycode_Set : MonoBehaviour
+public class Keycode_Set : NetworkBehaviour
 {
     [SerializeField] private GameObject door;
     private Tager_Door currentDoor; // Cửa hiện tại mà người chơi đang ở gần
