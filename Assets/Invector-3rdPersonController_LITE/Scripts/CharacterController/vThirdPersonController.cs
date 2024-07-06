@@ -4,6 +4,16 @@ namespace Invector.vCharacterController
 {
     public class vThirdPersonController : vThirdPersonAnimator
     {
+/*        private Animator animator;*/
+
+        void Awake()
+        {
+            animator = GetComponent<Animator>();
+            if (animator == null)
+            {
+                Debug.LogError("Animator component is missing from this GameObject");
+            }
+        }
         public virtual void ControlAnimatorRootMotion()
         {
             if (!this.enabled) return;

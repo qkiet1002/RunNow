@@ -2446,7 +2446,7 @@ MonoBehaviour:
   sprintInput: 304
   rotateCameraXInput: Mouse X
   rotateCameraYInput: Mouse Y
-  cc: {fileID: 0}
+  cc: {fileID: 2862758606287892732}
   tpCamera: {fileID: 0}
   cameraMain: {fileID: 0}
 --- !u!54 &2973330491463765264
